@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ohm PEG Formatter</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto&family=Roboto+Mono&display=swap");
+      body {
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+      ::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 9px;
+        height: 9px;
+      }
+      ::-webkit-scrollbar-corner {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #909090;
+        border-radius: 4px;
+      }
+      * {
+        font-family: "Roboto Mono", sans-serif;
+        box-sizing: border-box;
+      }
+      .editor {
+        border: 2px solid red;
+        height: 80vh;
+        width: 80vw;
+      }
+      #editor,
+      .result {
+        flex: 1;
+        width: 100%;
+        height: 90%;
+        background-color: #0e161f;
+        color: white;
+        padding: 8px;
+        border-top: solid 2px #1c2834;
+      }
+      /* .result {
+        border-top: solid 2px #1c2834;
+        padding: 8px;
+        padding-left: 12px;
+        color: white;
+        background-color: #0e161f;
+      } */
+      .flex {
+        display: flex;
+        flex-direction: row;
+        height: 91.5vh;
+        width: 100%;
+      }
+      .flex > div:first-child {
+        border-right: solid 5px #1c2834;
+      }
+      .flex > div {
+        flex: 0.8;
+        background-color: #0e161f;
+      }
+      #result {
+        overflow: auto;
+        white-space: pre-wrap;
+      }
+      nav {
+        height: 8.5vh;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        background-color: #222;
+        color: white;
+        padding: 0 12px;
+      }
+      nav h1 {
+        font-size: 25px;
+      }
+      .filler {
+        margin: auto;
+      }
+      nav button {
+        font-family: "Open Sans", sans-serif;
+        font-size: 17px;
+        outline: none;
+        border: none;
+        border-radius: 5px;
+        padding: 6px 15px;
+      }
+      h2 {
+        font-size: 1.2rem;
+        font-family: "Open Sans", sans-serif;
+        background: none;
+        color: #168afd;
+        padding-left: 10px;
+      }
+      nav a {
+        font-family: "Open Sans", sans-serif;
+        color: #168afd;
+        text-decoration: none;
+        margin-right: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <h1>Ohm PEG Formatter</h1>
+      <div class="filler"></div>
+      <a
+        class="link"
+        target="_blank"
+        href="https://github.com/Akshat-Oke/p8086/"
+      >
+        <div>GitHub</div>
+      </a>
+      <button id="format">Format</button>
+    </nav>
+    <div class="flex">
+      <div>
+        <h2>Type here...</h2>
+        <div id="editor"></div>
+      </div>
+      <div>
+        <h2>...formatted will be here</h2>
+        <pre class="result" id="result">
+[Error at line 1, pos 73] Unexpected character ';'[Error at line 2, pos 93] Unexpected [Error at line 1, pos 73] Unexpected character ';'[Error at line 2, pos 93] Unexpected</pre
+        >
+      </div>
+    </div>
+    <!-- <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.6.0/ace.min.js"
+      integrity="sha512-Ky7AOm/5oRYp5QzV9diL95tE/OKjzfAkugQ+llHy1scOlzIyAt2SoyriapPAZTvtZNL/xbYI1Gvt5jJYurPBdw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/nord_dark");
+      editor.setHighlightActiveLine(false);
+    </script> -->
+    <!-- <script type="module" src="./dist/PEG_formatter.js"></script> -->
+    <script type="module">
+      import { CodeJar } from "https://medv.io/codejar/codejar.js";
+      import { PEG } from "./PEG_Formatter.js";
+      import { PrettyPrinter } from "./printer.js";
+
+      let jar = CodeJar(document.querySelector("#editor"), () => {});
+      document.getElementById("format").addEventListener("click", format);
+      function format() {
+        document.getElementById("result").innerHTML = "";
+        let code = jar.toString();
+        const peg = new PEG(code);
+        const ohm = peg.parse();
+        console.log("haderror", PEG.hadError);
+        if (!PEG.hadError) {
+          const printer = new PrettyPrinter(ohm);
+          document.getElementById("result").innerHTML =
+            printer.getFormattedString();
+        }
+      }
+      jar.updateCode(`Arithmetic {
+  Exp= AddExp
+
+  AddExp
+    = AddExp "+" MulExp  -- plus
+  | AddExp "-" MulExp  -- minus
+  | MulExp
+
+  MulExp
+    = MulExp "*" ExpExp  -- times
+   | MulExp "/" ExpExp  -- divide
+    | ExpExp
+
+  ExpExp
+    = PriExp "^" ExpExp  -- power | PriExp
+
+  PriExp
+    = "(" Exp ")"  -- paren
+       | "+" PriExp   -- pos
+    |   "-" PriExp   -- neg
+      |  ident
+      | number
+
+  ident  (an identifier)
+    = letter alnum*
+
+  number  (a number)
+    = digit* "." digit+  -- fract
+    | digit+             -- whole
+}`);
+    </script>
+  </body>
+</html>

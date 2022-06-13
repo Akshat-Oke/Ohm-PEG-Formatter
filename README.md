@@ -1,5 +1,6 @@
 # Formatter for the Ohm PEG
 
+Try it [here](https://akshat-oke.github.io/Ohm-PEG-Formatter/)
 ---
 
 [Ohm](https://ohmjs.org) is a parsing toolkit to parse custom file formats and quickly build parsers or interpreters for programming languages. Quoting from their website:

@@ -42,7 +42,7 @@ export class Parser {
         if (!n)
             throw new ParseError(this.peek(), "");
         chunk.push(n);
-        while (!this.check(TT.LEFT_BRACE)) {
+        while (!this.check(TT.LEFT_BRACE) && !this.isAtEnd()) {
             chunk.push(this.advance());
         }
         return new Chunk(chunk);
@@ -125,7 +125,7 @@ export class Parser {
         return this.tokens[this.current];
     }
     consume(type, message, skipNewLines = true) {
-        while (skipNewLines && this.check(TT.NEW_LINE))
+        while (skipNewLines && this.check(TT.NEW_LINE) && !this.isAtEnd())
             this.advance();
         if (this.check(type))
             return this.advance();

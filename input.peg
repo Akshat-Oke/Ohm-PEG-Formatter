@@ -30,3 +30,4 @@ Arithmetic {
     = digit* "." digit+  -- fract
     | digit+             -- whole
 }
+s

@@ -36,7 +36,7 @@ It does not have support for the `#`, `~` or `&` operators, nor parenthesized ex
 The end result of formatting is to align the "or cases" vertically with each other and the rule's "=" symbol. So, for example
 
 ```
-expr = literal "+" expr | literal "-" expr | "(" expr ")" | literal
+expr = literal "+" expr --add | literal "-" expr --sub | "(" expr ")" --paren | literal --terminal
 ```
 
 will give

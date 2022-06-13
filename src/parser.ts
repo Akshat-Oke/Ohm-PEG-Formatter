@@ -42,7 +42,7 @@ export class Parser {
     let n = this.consume(TT.IDENTIFIER, "Expected grammar name");
     if (!n) throw new ParseError(this.peek(), "");
     chunk.push(n);
-    while (!this.check(TT.LEFT_BRACE)) {
+    while (!this.check(TT.LEFT_BRACE) && !this.isAtEnd()) {
       chunk.push(this.advance());
     }
     return new Chunk(chunk);
@@ -132,7 +132,8 @@ export class Parser {
     message: string,
     skipNewLines: boolean = true
   ): Token | undefined {
-    while (skipNewLines && this.check(TT.NEW_LINE)) this.advance();
+    while (skipNewLines && this.check(TT.NEW_LINE) && !this.isAtEnd())
+      this.advance();
     if (this.check(type)) return this.advance();
     throw new ParseError(this.peek(), message);
   }

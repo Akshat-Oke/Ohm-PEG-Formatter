@@ -5,6 +5,7 @@ export class PEG {
         this.tokenizer = new Tokenizer(source);
     }
     parse() {
+        this.hadError = false;
         let tokens = this.tokenizer.scanTokens();
         let parser = new Parser(tokens);
         return parser.parse();

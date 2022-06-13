@@ -9,6 +9,7 @@ export class PEG {
     this.tokenizer = new Tokenizer(source);
   }
   parse(): Grammar[] | undefined {
+    PEG.hadError = false;
     let tokens = this.tokenizer.scanTokens();
     let parser = new Parser(tokens);
     return parser.parse();
